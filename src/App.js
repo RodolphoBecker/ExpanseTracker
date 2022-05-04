@@ -1,9 +1,13 @@
-import { React } from 'react'
+import PageContainer from './components/Containers/PageContainer'; 
+import Navbar from './components/Navbar/Navbar';
+import './styles/App.scss'
 
 function App() {
 	return (
 		<div className="App">
-			App on
+			<PageContainer>
+				<Navbar />
+			</PageContainer>
 		</div>
 	);
 }
