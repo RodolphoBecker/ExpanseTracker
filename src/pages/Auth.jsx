@@ -2,6 +2,7 @@ import styles from "../styles/authComponents/Auth.module.scss";
 import MainContainer from "../components/Containers/MainContainer";
 import { Title } from "../components/Titles/Titles";
 import { useEffect, useState } from "react";
+import { useLoginUser, useRegisterUser } from "../queries/user";
 
 const Auth = () => {
 	//LOGIN
@@ -10,6 +11,29 @@ const Auth = () => {
 	//REGISTER
 	const [regEmail, setRegEmail] = useState("");
 	const [regPw, setRegPw] = useState("");
+
+	let body = {
+		email: email,
+		password: pw,
+	};
+
+	let regBody = {
+		email: regEmail,
+		password: regPw,
+	};
+
+	const {
+		mutate: loginHandler,
+		isError: loginError,
+		error: loginErr,
+	} = useLoginUser();
+
+	const {
+		mutateAsync: registerHandler,
+		isSuccess: registerSucc,
+		isError: registerError,
+		error: registerErr,
+	} = useRegisterUser();
 
 	return (
 		<MainContainer>
@@ -34,8 +58,12 @@ const Auth = () => {
 				</div>
 			</form>
 
-            {/* REGISTER FORM */}
-            <form className={styles.registerForm} action="submit" onSubmit={(e) => e.preventDefault()}>
+			{/* REGISTER FORM */}
+			<form
+				className={styles.registerForm}
+				action="submit"
+				onSubmit={(e) => e.preventDefault()}
+			>
 				<div className={styles.container}>
 					<Title>Register</Title>
 					<span>Email :</span>
@@ -52,7 +80,9 @@ const Auth = () => {
 						onChange={(e) => setRegPw(e.target.value)}
 						value={regPw}
 					/>
-					<button>Register Now</button>
+					<button
+					onClick={() => registerHandler(regBody)}
+					>Register Now</button>
 				</div>
 			</form>
 		</MainContainer>
