@@ -3,6 +3,7 @@ import PageContainer from "./components/Containers/PageContainer";
 import Navbar from "./components/Navbar/Navbar";
 import MobileNavbar from "./components/Navbar/MobileNavbar";
 import MainContainer from "./components/Containers/MainContainer";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 //Pages
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
@@ -27,7 +28,7 @@ function App() {
 					<Routes>
 						<Route path="/auth" element={<Auth />} />
 						{/* PROTECTED ROUTES */}
-						<Route element={<Outlet />}>
+						<Route element={<ProtectedRoutes />}>
 							<Route path="/" element={<Home />} />
 							<Route
 								path="/*"

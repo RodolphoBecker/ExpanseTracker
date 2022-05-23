@@ -1,8 +1,10 @@
 import styles from "../styles/authComponents/Auth.module.scss";
 import MainContainer from "../components/Containers/MainContainer";
 import { Title } from "../components/Titles/Titles";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLoginUser, useRegisterUser } from "../queries/user";
+import { Navigate, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider";
 
 const Auth = () => {
 	//LOGIN
@@ -11,6 +13,12 @@ const Auth = () => {
 	//REGISTER
 	const [regEmail, setRegEmail] = useState("");
 	const [regPw, setRegPw] = useState("");
+
+	//CONTEXT
+	const { auth, setAuth } = useContext(AuthContext);
+
+	//NAVIGATE
+	const navigate = useNavigate();
 
 	let body = {
 		email: email,
@@ -35,6 +43,10 @@ const Auth = () => {
 		error: registerErr,
 	} = useRegisterUser();
 
+	useEffect(() => {
+		if (auth) navigate("/");
+	});
+
 	return (
 		<MainContainer>
 			<form action="submit" onSubmit={(e) => e.preventDefault()}>
@@ -54,7 +66,18 @@ const Auth = () => {
 						onChange={(e) => setPw(e.target.value)}
 						value={pw}
 					/>
-					<button>Login Now</button>
+					<button
+						onClick={() =>
+							loginHandler(body, {
+								onError: () => {
+									console.log(loginErr);
+								},
+								onSuccess: () => setAuth(true),
+							})
+						}
+					>
+						Login Now
+					</button>
 				</div>
 			</form>
 
@@ -81,8 +104,21 @@ const Auth = () => {
 						value={regPw}
 					/>
 					<button
-					onClick={() => registerHandler(regBody)}
-					>Register Now</button>
+						onClick={() =>
+							registerHandler(regBody, {
+								onSuccess: () => {
+									loginHandler(regBody, {
+										onSuccess: () => setAuth(true),
+										onError: () => {
+											console.log(loginErr);
+										},
+									});
+								},
+							})
+						}
+					>
+						Register Now
+					</button>
 				</div>
 			</form>
 		</MainContainer>
